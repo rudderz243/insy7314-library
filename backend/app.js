@@ -16,12 +16,6 @@ const app = express();
 // then, you need to tell the app to make use of any required middleware you need to complete and understand the requests
 app.use(express.json()); // express.json allows us to use json in requests and responses
 
-const corsOptions = {
-  origin: "http://localhost:5173",
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
 
 // then, you need to map the routes to specific endpoints, so that the user/client is able to access them
 app.use("/api/home", homeRoutes);
