@@ -100,4 +100,78 @@ export const BookPage: React.FC = () => {
     // and reload the book array to have the updated information
     loadBooks();
   };
+
+  const handleDelete = async (id: string) => {
+    // call teh delete function from our API helper file
+    await deleteBook(id);
+    // clear the currently selected book, so the user can select a new one
+    if (editingBook?._id === id) setEditingBook(null);
+    // reload books list
+    loadBooks();
+  };
+
+  // this helper method loads in book information for a book we want to edit/delete
+  const handleInspect = async (id: string) {
+    const data = await getBook(id);
+    setEditingBook(data);
+  }
+  // where return starts = the actual HTML/display area
+  return (
+    <div className="bento-grid">
+      { /* the below div will hold the main card, which will hold our other controls */}
+      <div className="bento-card bento-col-8 teal-header">
+        <h3 className='card-title'>
+          <span>
+            {editingID ? "Edit Book" : "Add New Book"}
+          </span>
+          {editingID && (
+            <button className="btn btn-outline btn-sm" onClick={resetForm}>
+              Cancel Edit
+            </button>
+          )}
+        </h3>
+        {/* below the heading - we have the input form for editing/adding a new book */}
+        <form onSubmit={handleSubmit}>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Title:</label>
+              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required/>
+            </div>
+            <div className="form-group">
+              <label>Author:</label>
+              <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} required/>
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>ISBN:</label>
+              <input type="text" value={isbn} onChange={(e) => setIsbn(e.target.value)} required/>
+            </div>
+            <div className="form-group">
+              <label>Published Year:</label>
+              <input type="number" value={publishedYear} onChange={(e) => setPublishedYear(e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Genre:</label>
+              {/* select = dropdownlist in web */}
+              <select value={genre} onChange={(e) => setGenre(e.target.value as any)}>
+                <option value={"Fiction"}>Fiction</option>
+                <option value={"Non-Fiction"}>Non-Fiction</option>
+                <option value={"Textbook"}>Textbook</option>
+              </select>
+            </div>
+          </div>
+          {/* after the inputs, we need the buttons to save */}
+          <div className="btn-group" style={{ marginTop : "10px"}}>
+            <button type="submit" className="btn btn-teal">
+              {editingID ? "Replace Book" : "Add Book"} {/* if editing: put else post */}
+            </button>
+            <button className="btn btn-teal" onClick={handlePatch}>
+              Update Book
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
 };

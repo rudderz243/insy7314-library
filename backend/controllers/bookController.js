@@ -20,7 +20,7 @@ const createBook = async (req, res) => {
     // return the book object as json (code 201 - object created)
     return res.status(201).json(book);
   } catch (error) {
-    return res.status(500).json({ message: "Server explod" });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -29,11 +29,11 @@ const createBook = async (req, res) => {
 const getAllBooks = async (req, res) => {
   try {
     // use th emodel to perform the required operation
-    const books = await Book.Find();
+    const books = await Book.find();
     // convert the array of books, to a json array, and send to user
     return res.status(200).json(books);
   } catch (error) {
-    return res.status(500).json({ message: "Server explod" });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -59,7 +59,7 @@ const getBook = async (req, res) => {
     // if the book IS found, return the book
     return res.status(200).json(book);
   } catch (error) {
-    return res.status(500).json({ message: "Server explod" });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -95,7 +95,7 @@ const updateBook = async (req, res) => {
     // return the updated book
     return res.status(200).json(book);
   } catch (error) {
-    return res.status(500).json({ message: "Server explod" });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -117,7 +117,7 @@ const replaceBook = async (req, res) => {
     }
     // using the model to perform ther equired operation
     // once again, we do not need to perform validation for this operation, as the model handles that for us
-    const book = await Book.findOneAndReplace(req.params.id, req.body, {
+    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
@@ -130,7 +130,7 @@ const replaceBook = async (req, res) => {
     // otherwise, return the updated book
     return res.status(200).json(book);
   } catch (error) {
-    return res.status(500).json({ message: "Server explod" });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -155,7 +155,7 @@ const deleteBook = async (req, res) => {
     // otherwise, return the deleted book
     return res.status(200).json(book);
   } catch (error) {
-    return res.status(500).json({ message: "Server explod" });
+    return res.status(500).json({ message: error.message });
   }
 };
 

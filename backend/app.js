@@ -1,6 +1,8 @@
 // here we import express, which allows us to create an instance of the API and web server
 const express = require("express");
 
+const cors = require("cors");
+
 // here, we call in the database middleware, which allows us to access the methods we've created to interact with the database
 const database = require("./middleware/dbMiddleware.js");
 
@@ -13,6 +15,13 @@ const app = express();
 
 // then, you need to tell the app to make use of any required middleware you need to complete and understand the requests
 app.use(express.json()); // express.json allows us to use json in requests and responses
+
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 // then, you need to map the routes to specific endpoints, so that the user/client is able to access them
 app.use("/api/home", homeRoutes);
