@@ -111,50 +111,70 @@ export const BookPage: React.FC = () => {
   };
 
   // this helper method loads in book information for a book we want to edit/delete
-  const handleInspect = async (id: string) {
+  const handleInspect = async (id: string) => {
     const data = await getBook(id);
     setEditingBook(data);
-  }
+  };
   // where return starts = the actual HTML/display area
   return (
-    <div className="bento-grid">
-      { /* the below div will hold the main card, which will hold our other controls */}
-      <div className="bento-card bento-col-8 teal-header">
+    <div className='bento-grid'>
+      {/* the below div will hold the main card, which will hold our other controls */}
+      <div className='bento-card bento-col-8 teal-header'>
         <h3 className='card-title'>
-          <span>
-            {editingID ? "Edit Book" : "Add New Book"}
-          </span>
+          <span>{editingID ? "Edit Book" : "Add New Book"}</span>
           {editingID && (
-            <button className="btn btn-outline btn-sm" onClick={resetForm}>
+            <button className='btn btn-outline btn-sm' onClick={resetForm}>
               Cancel Edit
             </button>
           )}
         </h3>
         {/* below the heading - we have the input form for editing/adding a new book */}
         <form onSubmit={handleSubmit}>
-          <div className="form-row">
-            <div className="form-group">
+          <div className='form-row'>
+            <div className='form-group'>
               <label>Title:</label>
-              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required/>
+              <input
+                type='text'
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
             </div>
-            <div className="form-group">
+            <div className='form-group'>
               <label>Author:</label>
-              <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} required/>
+              <input
+                type='text'
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                required
+              />
             </div>
           </div>
-          <div className="form-row">
-            <div className="form-group">
+          <div className='form-row'>
+            <div className='form-group'>
               <label>ISBN:</label>
-              <input type="text" value={isbn} onChange={(e) => setIsbn(e.target.value)} required/>
+              <input
+                type='text'
+                value={isbn}
+                onChange={(e) => setIsbn(e.target.value)}
+                required
+              />
             </div>
-            <div className="form-group">
+            <div className='form-group'>
               <label>Published Year:</label>
-              <input type="number" value={publishedYear} onChange={(e) => setPublishedYear(e.target.value)} />
+              <input
+                type='number'
+                value={publishedYear}
+                onChange={(e) => setPublishedYear(e.target.value)}
+              />
             </div>
-            <div className="form-group">
+            <div className='form-group'>
               <label>Genre:</label>
               {/* select = dropdownlist in web */}
-              <select value={genre} onChange={(e) => setGenre(e.target.value as any)}>
+              <select
+                value={genre}
+                onChange={(e) => setGenre(e.target.value as any)}
+              >
                 <option value={"Fiction"}>Fiction</option>
                 <option value={"Non-Fiction"}>Non-Fiction</option>
                 <option value={"Textbook"}>Textbook</option>
@@ -162,16 +182,99 @@ export const BookPage: React.FC = () => {
             </div>
           </div>
           {/* after the inputs, we need the buttons to save */}
-          <div className="btn-group" style={{ marginTop : "10px"}}>
-            <button type="submit" className="btn btn-teal">
-              {editingID ? "Replace Book" : "Add Book"} {/* if editing: put else post */}
+          <div className='btn-group' style={{ marginTop: "10px" }}>
+            <button type='submit' className='btn btn-teal'>
+              {editingID ? "Replace Book" : "Add Book"}{" "}
+              {/* if editing: put else post */}
             </button>
-            <button className="btn btn-teal" onClick={handlePatch}>
+            <button className='btn btn-teal' onClick={handlePatch}>
               Update Book
             </button>
           </div>
         </form>
+      </div>{" "}
+      {/* end of the first card */}
+      {/* the next card holds stats */}
+      <div
+        className='bento-card bento-col-4'
+        style={{ borderLeft: "5px solid #0d9448" }}
+      >
+        <h3 className='card-title'>Stats</h3>
+        <div style={{ marginTop: "15px" }}>
+          <div className='stats-num'>{books.length}</div>
+          <div className='stats-label'>Total Books</div>
+        </div>
+      </div>
+      {/* book details card */}
+      {editingBook && (
+        <div
+          className='bento-card bento-col-12'
+          style={{ borderLeft: "5px solid #0d9448" }}
+        >
+          <h3 className='card-title'>
+            Book Details
+            <button
+              className='btn btn-outline btn-sm'
+              onClick={() => setEditingBook(null)}
+            >
+              Close Pane
+            </button>
+          </h3>
+          <p>ID: {editingBook._id}</p>
+          <p>Title: {editingBook.title}</p>
+          <p>Author: {editingBook.author}</p>
+          <p>ISBN: {editingBook.isbn}</p>
+          <p>Genre: {editingBook.genre}</p>
+          {editingBook && <p>Year: {editingBook.publishedYear}</p>}
+        </div>
+      )}
+      {/* list of all books card */}
+      <div className='bento-card bento-col-12 teal-header'>
+        <h3 className='card-title'>
+          <span>Book List</span>
+          <button className='btn btn-outline btn-sm' onClick={loadBooks}>
+            Refresh
+          </button>
+        </h3>
+        {/* we hide this if there are no books */}
+        {books.length === 0 ? (
+          <p style={{ color: "#64748b" }}>No books available.</p>
+        ) : (
+          books.map((book) => (
+            <div key={book._id || book.isbn} className='book-item'>
+              <div className='book-info'>
+                <h4>
+                  {book.title}{" "}
+                  <span className='badge badge-teal'>{book.genre}</span>
+                </h4>
+                <p>
+                  By {book.author} | ISBN: {book.isbn}{" "}
+                  {book.publishedYear && `| Year: ${book.publishedYear}`}
+                </p>
+              </div>
+              {/* these buttons will appear next to each item in the list */}
+              <div className='btn-group'>
+                {book._id && (
+                  <button
+                    className='btn btn-outline btn-sm'
+                    onClick={() => handleInspect(book._id!)}
+                  >
+                    Inspect Book
+                  </button>
+                )}
+                {book._id && (
+                  <button
+                    className='btn btn-outline btn-sm'
+                    onClick={() => handleDelete(book._id!)}
+                  >
+                    Delete Book
+                  </button>
+                )}
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
-  )
+  );
 };
