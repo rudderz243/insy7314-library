@@ -9,6 +9,7 @@ const database = require("./middleware/dbMiddleware.js");
 // here, we call in all of our routing files, allowing us to map them later on in the file
 const homeRoutes = require("./routes/homeRoutes.js");
 const bookRoutes = require("./routes/bookRoutes.js");
+const authRoutes = require("./routes/authRoutes.js");
 
 // the first step in creating the API, is to create a singleton (single instance) of the express library to call in throughout the whole app
 const app = express();
@@ -26,6 +27,7 @@ app.use(cors(corsOptions));
 // then, you need to map the routes to specific endpoints, so that the user/client is able to access them
 app.use("/api/home", homeRoutes);
 app.use("/api/books", bookRoutes);
+app.use("/api/auth", authRoutes);
 
 // lastly, we tell the application to start listening. we need to specify a port for the app to listen on, in this case, 3000
 // we do this using a then function. it does something first (in this case, connects to the database), THEN starts the listening for connections
