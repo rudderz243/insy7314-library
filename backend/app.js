@@ -5,6 +5,7 @@ const cors = require("cors");
 
 // here, we call in the database middleware, which allows us to access the methods we've created to interact with the database
 const database = require("./middleware/dbMiddleware.js");
+const setupSecurity = require("./middleware/securityMiddleware.js");
 
 // here, we call in all of our routing files, allowing us to map them later on in the file
 const homeRoutes = require("./routes/homeRoutes.js");
@@ -16,13 +17,10 @@ const app = express();
 
 // then, you need to tell the app to make use of any required middleware you need to complete and understand the requests
 app.use(express.json()); // express.json allows us to use json in requests and responses
-// cors allows us to let our frontend talk to the backend by whitelisting its URL
-const corsOptions = {
-  origin: "http://localhost:5173",
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
+
+// this function passes through our app singleton, and applies all security
+// middleware that we have now, and what we add in the future
+setupSecurity(app);
 
 // then, you need to map the routes to specific endpoints, so that the user/client is able to access them
 app.use("/api/home", homeRoutes);

@@ -11,16 +11,22 @@ const {
   deleteBook,
 } = require("../controllers/bookController.js");
 
+// call in the methods to protect our book routes
+const {
+  validateAuth,
+  validateRole,
+} = require("../middleware/authMiddleware.js");
+
 const router = express.Router();
 
-router.post("/", createBook);
+router.post("/", validateAuth, validateRole("librarian"), createBook);
 
 router.get("/", getAllBooks);
 router.get("/:id", getBook);
 
-router.put("/:id", replaceBook);
-router.patch("/:id", updateBook);
+router.put("/:id", validateAuth, validateRole("librarian"), replaceBook);
+router.patch("/:id", validateAuth, validateRole("librarian"), updateBook);
 
-router.delete("/:id", deleteBook);
+router.delete("/:id", validateAuth, validateRole("librarian"), deleteBook);
 
 module.exports = router;
