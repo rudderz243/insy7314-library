@@ -1,7 +1,9 @@
 // here we import express, which allows us to create an instance of the API and web server
 const express = require("express");
-// cors - resource sharing library - we use it to tell our backend which frontends may talk to it
-const cors = require("cors");
+
+// these packages are required for https:
+const https = require("https"); // for creating the https socket
+const fs = require("fs"); // to read files from the filesystem
 
 // here, we call in the database middleware, which allows us to access the methods we've created to interact with the database
 const database = require("./middleware/dbMiddleware.js");
@@ -14,6 +16,13 @@ const authRoutes = require("./routes/authRoutes.js");
 
 // the first step in creating the API, is to create a singleton (single instance) of the express library to call in throughout the whole app
 const app = express();
+
+// configure the SSL options
+const sslOptions = {
+  key: fs.readFileSync("../cert.key"), // key -> identifies WHO owns the cert
+  cert: fs.readFileSync("../cert.crt"), // cert -> used to encrypt the traffic
+  ca: fs.readFileSync("../ca.crt"), // ca -> who to ask if the cert is real
+};
 
 // then, you need to tell the app to make use of any required middleware you need to complete and understand the requests
 app.use(express.json()); // express.json allows us to use json in requests and responses
@@ -30,7 +39,7 @@ app.use("/api/auth", authRoutes);
 // lastly, we tell the application to start listening. we need to specify a port for the app to listen on, in this case, 3000
 // we do this using a then function. it does something first (in this case, connects to the database), THEN starts the listening for connections
 database.start().then(() => {
-  app.listen(3000, () => {
+  https.createServer(sslOptions, app).listen(3000, () => {
     // once the app starts, we print out to the developer terminal
     console.log("API started on port 3000");
   });

@@ -1,6 +1,6 @@
 import type { Book } from "../models/book.ts";
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "https://localhost:3000/api";
 
 // this function will get ALL books from the API
 export async function getBooks(): Promise<Book[]> {

@@ -29,7 +29,7 @@ const registerUser = async(req, res) => {
         });
         // return the newly created user + their token
         return res.status(201).json({
-            _id = user._id,
+            _id: user._id,
             username: user.username,
             email: user.email,
             role: user.role,
