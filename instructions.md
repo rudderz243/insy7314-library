@@ -1,84 +1,196 @@
-# These are the instructions to follow the same process we followed in class:
+# Classwork Instructions & Process Guide
 
-## 14/07
+These are the step-by-step instructions to follow the process completed during class sessions.
 
-- New project: `npm init -y`
-- New packages: `npm i express nodemon`
+---
 
-1. We created a folder called `first app` to hold our app, and opened this folder in VS Code.
-2. We then created 2 new folders, `backend` and `frontend` - this allows us to seperate our project into pieces.
-3. In the `backend` folder, we ran `npm init`, this creates a new Node.js project for us to work with.
-4. In the terminal, we then ran `cd backend` to start working in the backend.
-5. We then ran `npm i nodemon` to install nodemon, which allows us to run our app in development mode.
-6. We then ran `npm i express` to install express, which we will use to create our backend API and web server.
-7. We then created a file called `app.js` which we wrote our basic code into.
+## Package Quick Installation Guide (Scratch Setup)
 
-## 16/07 - S1 8-10
+If you are setting up the project from scratch without cloning, use these single-line commands:
 
-- Once we were happy with the basic code, we started breaking down our code into smaller pieces.
+### Backend Package Installation
 
-1. We created new folders called `controllers` and `routes`
-2. In the `controllers` folder, we created a new file, `homeController.js`
-3. We moved some of our code into this file (as it now handles the logic of requests)
-4. In the `routes` folder, we then created `homeRoutes.js`
-5. We wrote some new code in here (the routes map the incoming request to the right function in the controllers)
-6. We updated the `app.js` to make use of the
+```bash
+cd backend
+npm i express mongoose dotenv cors bcryptjs jsonwebtoken nodemon
+```
 
-## 16/07 - S2 10-12
+### Frontend Package Installation
 
-- Once we had seen the basics of routing and controllers, we started interacting with the database
-- New packages: `npm i mongoose dotenv`
+```bash
+npx create-vite@latest frontend --template react-ts
+cd frontend
+npm i react-router-dom
+```
 
-1. In the terminal, in the backend folder, we ran `npm i mongoose dotenv` to install the 2 new required packages.
-2. We then created 2 new folders, `middleware` and `models`
-3. In the `middleware` folder, we created `dbMiddleware.js` to handle our servers connection to the database
-4. In the `models` folder, we created `bookModel.js` to define what information a book has
-5. In the main `backend` folder, we created 2 new files, `.env` and `.gitignore`
-6. In the `.env` file, we added our connection string as CONN_STRING
-7. In the `.gitignore` file, we added 2 lines to stop the `.env` file and the `node_modules` folder from being pushed to GitHub
-8. We then wrote code in the `dbMiddleware.js` and `bookModel.js` files, and modified our `app.js`
-9. We then created `bookController.js` in the `controllers` folder to handle CRUD for our Book endpoint
+---
 
-## 22/07
+## 14/07 - Initializing the Backend Server
 
-- Finished `bookController.js`
-- Finished `bookRoutes.js`
-- Updated `app.js`
-- Tested the application in Postman
+- Packages: `express`, `nodemon`
+- Initialization: `npm init -y`
 
-## 29/07
+1. Created a root project directory called `first app` and opened it in VS Code.
+2. Created two subdirectories: `backend` and `frontend` to separate the backend API from the client interface.
+3. Navigated into the backend folder in the terminal:
+   ```bash
+   cd backend
+   ```
+4. Initialized Node.js project:
+   ```bash
+   npm init -y
+   ```
+5. Installed Nodemon for development server auto-reloading:
+   ```bash
+   npm i nodemon
+   ```
+6. Installed Express to build the web server and API routes:
+   ```bash
+   npm i express
+   ```
+7. Created `app.js` as the main entry point for the Express backend application.
 
-### Frontend
+---
 
-New packages: `npm i react-router-dom`
+## 16/07 - Session 1 (08:00 - 10:00): Controllers & Routes Architecture
 
-1. Created a Vite.js frontend application using `npm create vite@latest`
-2. Select the options Typescript, React, ESLint
-3. In the frontend folder, install the required package by running `npm i react-router-dom`
-4. Create a folder `components`, and in that folder, `NavBar.tsx`
-5. Create a folder `models`, and in that folder, `book.ts`
-6. Create a folder `services`, and in that folder, `api.ts`
-7. Create a folder `pages`, and in that folder, `BookPage.tsx` and `HealthCheckPage.tsx`
-8. Modify `App.tsx` and `index.css`
+- Objective: Modularizing app logic by separating routing from controller logic.
 
-### Backend
+1. Created new subdirectories in `backend`: `controllers` and `routes`.
+2. Created `homeController.js` inside `controllers/` to handle logic for system and test requests.
+3. Moved request handler functions into `homeController.js`.
+4. Created `homeRoutes.js` inside `routes/` to define API endpoints and map requests to corresponding controller functions.
+5. Updated `app.js` to import `homeRoutes.js` and register the route prefix using `app.use("/api/home", homeRoutes)`.
 
-- New packages: `npm i cors`
+---
 
-1. In the backend, install the required packages by running `npm i cors`
-2. Modify `app.js` to add cors options
+## 16/07 - Session 2 (10:00 - 12:00): Database Connection & Data Models
 
-## 31/07
+- Packages: `mongoose`, `dotenv`
 
-- Created Postman accounts
-- Created a collection, with folders and routes, for the backend
-- Tested each backend route
+1. Installed Mongoose ODM and DotEnv package inside `backend`:
+   ```bash
+   npm i mongoose dotenv
+   ```
+2. Created two new subdirectories in `backend`: `middleware` and `models`.
+3. Created `dbMiddleware.js` inside `middleware/` to handle connecting to MongoDB database using Mongoose.
+4. Created `bookModel.js` inside `models/` to define the Book schema (title, author, genre, publishedYear, status).
+5. Created `.env` and `.gitignore` files in the root of `backend/`.
+6. Defined database connection string in `.env`:
+   ```env
+   CONN_STRING=your_mongodb_connection_string
+   ```
+7. Added `.env` and `node_modules` to `.gitignore` to prevent secret key and package commits.
+8. Updated `dbMiddleware.js`, `bookModel.js`, and updated `app.js` to connect to database before starting server.
+9. Created `bookController.js` inside `controllers/` to implement CRUD logic for books.
 
-## 03/08
+---
 
-- Started with RBAC
-- New packages: `npm i jsonwebtoken`
+## 22/07 - Book CRUD Completion & Route Integration
 
-1. Created `authMiddleware.js`, `authController.js`, `authRoutes.js`
-2. Completed code in controller and routes
-3. Started with middleware
+- Completed CRUD handler methods in `bookController.js` (`createBook`, `getAllBooks`, `getBook`, `updateBook`, `replaceBook`, `deleteBook`).
+- Created `bookRoutes.js` inside `routes/` mapping endpoints:
+  - `POST /` -> `createBook`
+  - `GET /` -> `getAllBooks`
+  - `GET /:id` -> `getBook`
+  - `PUT /:id` -> `replaceBook`
+  - `PATCH /:id` -> `updateBook`
+  - `DELETE /:id` -> `deleteBook`
+- Updated `app.js` to mount book routes under `/api/books`.
+- Tested endpoints using Postman.
+
+---
+
+## 29/07 - Frontend Integration & Backend CORS Configuration
+
+### Frontend Setup
+
+- Packages: `react-router-dom`
+- Tooling: Vite with React and TypeScript
+
+1. Created Vite React TypeScript application:
+   ```bash
+   npm create vite@latest
+   ```
+   Select options: `React`, `TypeScript`, `ESLint`.
+2. Installed client-side router inside `frontend`:
+   ```bash
+   cd frontend
+   npm i react-router-dom
+   ```
+3. Created `src/components/` directory and added `NavBar.tsx` for header navigation.
+4. Created `src/models/` directory and added `book.ts` defining the TypeScript `Book` interface.
+5. Created `src/services/` directory and added `api.ts` with fetch requests to backend endpoints (`getBooks`, `getBook`, `createBook`, `updateBook`, `replaceBook`, `deleteBook`).
+6. Created `src/pages/` directory and added `BookPage.tsx` and `HealthCheckPage.tsx`.
+7. Updated `App.tsx` with BrowserRouter and route mappings (`/` to `BookPage`, `/health` to `HealthCheckPage`).
+8. Configured layout styling in `index.css` and `App.css`.
+
+### Backend CORS Setup
+
+- Packages: `cors`
+
+1. Installed CORS package inside `backend`:
+   ```bash
+   npm i cors
+   ```
+2. Configured CORS in `app.js`:
+   ```javascript
+   const corsOptions = {
+     origin: "http://localhost:5173",
+     credentials: true,
+     optionsSuccessStatus: 200,
+   };
+   app.use(cors(corsOptions));
+   ```
+
+---
+
+## 31/07 - Postman API Documentation & Testing
+
+1. Created a Postman account, workspace, and a collection named `INSY7314`.
+2. Structured the collection into dedicated request folders:
+   - `Auth Requests`
+   - `Services Requests`
+   - `Transaction Requests`
+   - `Booking Requests`
+   - `Book Requests`
+3. Created and configured API requests in the `Book Requests` folder:
+   - `Get ALL Books from the API`: `GET http://localhost:3000/api/books` to retrieve all book records.
+   - `Add a NEW Book`: `POST http://localhost:3000/api/books` with a JSON raw body containing book details (`title`, `author`, `isbn`, `publishedYear`, `genre`).
+   - `Get a SINGLE Book`: `GET http://localhost:3000/api/books/:id` to retrieve a book by its MongoDB Object ID.
+   - `Update EXISTING Book`: `PATCH http://localhost:3000/api/books/:id` with a JSON raw body to modify specific fields (e.g. `title`).
+   - `Replace EXISTING Book`: `PUT http://localhost:3000/api/books/:id` with a JSON raw body to replace an entire book document.
+   - `Delete EXISTING Book`: `DELETE http://localhost:3000/api/books/:id` to remove a book document by ID.
+4. Tested each route against the running Express backend to verify HTTP status codes and JSON responses.
+5. Exported the completed Postman collection to the root directory as `postman-collection` for repository documentation and testing.
+
+---
+
+## 03/08 - Authentication & Role-Based Access Control (RBAC)
+
+- Packages: `bcryptjs`, `jsonwebtoken`
+
+1. Installed authentication dependencies inside `backend`:
+   ```bash
+   npm i bcryptjs jsonwebtoken
+   ```
+2. Updated `.env` file to add JWT secret key:
+   ```env
+   JWT_SECRET=your_jwt_secret_key
+   ```
+3. Created `userModel.js` inside `backend/models/`:
+   - Defined `userSchema` with fields `username`, `email` (unique, lowercase), `password`, and `role` (enum: `patron`, `librarian`, default: `patron`).
+   - Added Mongoose `pre("save")` hook to automatically salt and hash user passwords using `bcrypt.genSalt(10)` and `bcrypt.hash()`.
+   - Added instance method `matchPassword` using `bcrypt.compare()` to compare entered plain passwords against database hash.
+4. Created `authController.js` inside `backend/controllers/`:
+   - Defined `generateToken(id, role)` helper function using `jwt.sign()` with a 7-day expiration.
+   - Implemented `registerUser`: checks required fields, validates duplicate email via `User.findOne()`, creates new user document, and returns user details plus JWT token.
+   - Implemented `loginUser`: verifies user existence, checks password using `matchPassword()`, and returns user details plus JWT token.
+5. Created `authMiddleware.js` inside `backend/middleware/`:
+   - Implemented `validateAuth`: extracts Bearer token from `Authorization` header, verifies token using `jwt.verify()`, looks up user by ID excluding password (`select("-password")`), and attaches user object to `req.user`.
+6. Created `authRoutes.js` inside `backend/routes/`:
+   - Mapped `POST /register` to `registerUser`.
+   - Mapped `POST /login` to `loginUser`.
+7. Updated `app.js`:
+   - Imported `authRoutes` from `./routes/authRoutes.js`.
+   - Mounted auth routes under `/api/auth` using `app.use("/api/auth", authRoutes)`.
