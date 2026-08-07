@@ -29,10 +29,11 @@ const userSchema = new mongoose.Schema({
 
 // hook function -> is something that runs when something else is called
 // when we save the user -> a hook function will run to do something before the user is saved
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
+  // remove next from the brackets
   // if the user is not modifying their password, we can skip this step
   if (!this.isModified("password")) {
-    return next();
+    return; //remove next() here;
   }
   // otherwise, if it is a new user, or the user is updating their password, we must hash/salt the password
   try {
@@ -41,9 +42,10 @@ userSchema.pre("save", async function (next) {
     // 2 => we combine the salt with the users password
     this.password = await bcrypt.hash(this.password, salt);
     // 3 => once the password is appropriately seasoned, we move to the next step, which is saving
-    next();
+    // remove next();
   } catch (error) {
-    next(error);
+    // change next(error) to:
+    console.log(error.message);
   }
 });
 

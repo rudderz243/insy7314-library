@@ -15,7 +15,7 @@ const validateAuth = async (req, res, next) => {
       const decode = jwt.verify(token, process.env.JWT_SECRET);
 
       // try and find the user associated with that token
-      req.user = await User.findById(decoded.id).select("-password");
+      req.user = await User.findById(decode.id).select("-password");
       // check whether a user was found using that token
       if (!req.user) {
         return res
