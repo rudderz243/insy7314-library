@@ -166,7 +166,7 @@ npm i react-router-dom
 
 ---
 
-## 03/08 - Authentication & Role-Based Access Control (RBAC)
+## 03/08 - Authentication & Role-Based Access Control (RBAC) Setup
 
 - Packages: `bcryptjs`, `jsonwebtoken`
 
@@ -188,9 +188,71 @@ npm i react-router-dom
    - Implemented `loginUser`: verifies user existence, checks password using `matchPassword()`, and returns user details plus JWT token.
 5. Created `authMiddleware.js` inside `backend/middleware/`:
    - Implemented `validateAuth`: extracts Bearer token from `Authorization` header, verifies token using `jwt.verify()`, looks up user by ID excluding password (`select("-password")`), and attaches user object to `req.user`.
+   - Included fail-close error handling: returns 401 Unauthorized if token verification fails or user no longer exists.
 6. Created `authRoutes.js` inside `backend/routes/`:
    - Mapped `POST /register` to `registerUser`.
    - Mapped `POST /login` to `loginUser`.
 7. Updated `app.js`:
    - Imported `authRoutes` from `./routes/authRoutes.js`.
    - Mounted auth routes under `/api/auth` using `app.use("/api/auth", authRoutes)`.
+
+---
+
+## 07/08 - HTTPS SSL Setup, Security Middleware & Role Authorization
+
+### SSL Certificate Generation & Trust Installation
+
+1. Generated local Certificate Authority and localhost certificates using `mkcert` in the root directory:
+   ```bash
+   npx mkcert create-ca
+   npx mkcert create-cert localhost
+   ```
+   This created `ca.crt`, `ca.key`, `cert.crt`, and `cert.key`.
+2. Imported the Certificate Authority (`ca.crt`) into the local machine trust store on Windows using PowerShell:
+   ```powershell
+   Import-Certificate -FilePath ".\ca.crt" -CertStoreLocation "Cert:\CurrentUser\Root"
+   ```
+   Created [certificates.md](file:///c:/Users/Glynn/Documents/2026/INSY7314%20-%20APDS/Classwork%20Repo/certificates.md) providing step-by-step CA import instructions for Windows, macOS, and Linux.
+
+### Express Backend HTTPS Conversion
+
+1. Updated `backend/app.js` to load SSL certificate files (`ca.crt`, `cert.crt`, `cert.key`) using Node `fs.readFileSync`.
+2. Converted server initialization from HTTP to HTTPS using `https.createServer(sslOptions, app)` listening on port 3000 (`https://localhost:3000`).
+
+### Security Middleware Setup
+
+1. Created `securityMiddleware.js` inside `backend/middleware/` to centralize CORS configuration:
+   ```javascript
+   const corsOptions = {
+     origin: "https://localhost:5173",
+     credentials: true,
+     optionsSuccessStatus: 200,
+   };
+   ```
+2. Updated `app.js` to invoke `setupSecurity(app)`.
+
+### Vite Frontend HTTPS & API Service Configuration
+
+1. Updated `frontend/vite.config.ts` to enable HTTPS support by reading SSL keys from `../cert.key` and `../cert.crt`.
+2. Updated `frontend/src/services/api.ts` API base URL to `https://localhost:3000/api`.
+
+### RBAC Route Protection
+
+1. Added `validateRole(...roles)` helper in `backend/middleware/authMiddleware.js`:
+   ```javascript
+   const validateRole = (...roles) => {
+     return (req, res, next) => {
+       if (!req.user || !roles.includes(req.user.role)) {
+         return res
+           .status(403)
+           .json({ message: "Forbidden: you do not have permission to do this." });
+       }
+       next();
+     };
+   };
+   ```
+2. Protected Book mutation routes in `backend/routes/bookRoutes.js`:
+   - `POST /` -> `validateAuth`, `validateRole("librarian")`, `createBook`
+   - `PUT /:id` -> `validateAuth`, `validateRole("librarian")`, `replaceBook`
+   - `PATCH /:id` -> `validateAuth`, `validateRole("librarian")`, `updateBook`
+   - `DELETE /:id` -> `validateAuth`, `validateRole("librarian")`, `deleteBook`
