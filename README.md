@@ -88,25 +88,25 @@ npm i react-router-dom
 
 ### Backend
 
-| Package | Why |
-| --- | --- |
-| Express | Framework used to create the backend web server and API routes |
-| Mongoose | Object Data Modeling (ODM) library to interact with the MongoDB database |
-| DotEnv | Reads environment variables from the `.env` file |
-| Cors | Middleware enabling Cross-Origin Resource Sharing for the frontend |
-| BcryptJS | Library for hashing and salting user passwords securely |
+| Package      | Why                                                                              |
+| ------------ | -------------------------------------------------------------------------------- |
+| Express      | Framework used to create the backend web server and API routes                   |
+| Mongoose     | Object Data Modeling (ODM) library to interact with the MongoDB database         |
+| DotEnv       | Reads environment variables from the `.env` file                                 |
+| Cors         | Middleware enabling Cross-Origin Resource Sharing for the frontend               |
+| BcryptJS     | Library for hashing and salting user passwords securely                          |
 | JsonWebToken | Implementation of JSON Web Tokens used for user authentication and authorization |
-| Nodemon | Development utility that automatically restarts the Node server on file changes |
+| Nodemon      | Development utility that automatically restarts the Node server on file changes  |
 
 ### Frontend
 
-| Package | Why |
-| --- | --- |
-| React | Core UI framework for building interactive user interfaces |
-| React-DOM | Package providing DOM-specific methods for React |
-| React-Router-Dom | Client-side routing library for navigation between pages |
-| Vite | Frontend build tool and high-performance development server |
-| TypeScript | Provides static type checking and modern syntax support |
+| Package          | Why                                                         |
+| ---------------- | ----------------------------------------------------------- |
+| React            | Core UI framework for building interactive user interfaces  |
+| React-DOM        | Package providing DOM-specific methods for React            |
+| React-Router-Dom | Client-side routing library for navigation between pages    |
+| Vite             | Frontend build tool and high-performance development server |
+| TypeScript       | Provides static type checking and modern syntax support     |
 
 ## Environment Variables
 
