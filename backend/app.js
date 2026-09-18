@@ -8,6 +8,8 @@ const fs = require("fs"); // to read files from the filesystem
 // here, we call in the database middleware, which allows us to access the methods we've created to interact with the database
 const database = require("./middleware/dbMiddleware.js");
 const setupSecurity = require("./middleware/securityMiddleware.js");
+const logger = require("./utils/logger.js");
+const httpLogger = require("./middleware/loggerMiddleware.js");
 
 // here, we call in all of our routing files, allowing us to map them later on in the file
 const homeRoutes = require("./routes/homeRoutes.js");
@@ -27,6 +29,9 @@ const sslOptions = {
 // then, you need to tell the app to make use of any required middleware you need to complete and understand the requests
 app.use(express.json()); // express.json allows us to use json in requests and responses
 
+// automatically log every HTTP request that passes through the backend
+app.use(httpLogger);
+
 // this function passes through our app singleton, and applies all security
 // middleware that we have now, and what we add in the future
 setupSecurity(app);
@@ -36,11 +41,33 @@ app.use("/api/home", homeRoutes);
 app.use("/api/books", bookRoutes);
 app.use("/api/auth", authRoutes);
 
+// add exception handling
+process.on("uncaughtException", (err) => {
+  // use the custom logger so that it gets added to the .log file and printed to console
+  logger.error(`Uncaught Exception: ${err.message}`, "CRASH", err);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (reason) => {
+  logger.error(`Unhandled Rejection: ${reason}`, "CRASH");
+});
+
+// log when the app closes
+process.on("SIGINT", () => {
+  logger.info("Server shutting down (got ctrl+c in terminal)", "SERVER");
+  process.exit(0);
+});
+
+process.on("SIGTERM", () => {
+  logger.info("Server shutting down (termination signal received)", "SERVER");
+  process.exit(0);
+});
+
 // lastly, we tell the application to start listening. we need to specify a port for the app to listen on, in this case, 3000
 // we do this using a then function. it does something first (in this case, connects to the database), THEN starts the listening for connections
 database.start().then(() => {
   https.createServer(sslOptions, app).listen(3000, () => {
-    // once the app starts, we print out to the developer terminal
-    console.log("API started on port 3000");
+    // once the app starts, we print out to the developer terminal + the log file
+    logger.info("API started on port 3000", "SERVER");
   });
 });

@@ -32,3 +32,5 @@ const httpLogger = (req, res, next) => {
   // once we are done logging -> pass the request on to the next middleware item
   next();
 };
+
+module.exports = httpLogger;
