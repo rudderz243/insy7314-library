@@ -1,6 +1,51 @@
 import type { Book } from "../models/book.ts";
+import type {
+  AuthResponse,
+  LoginCredentials,
+  RegisterCredentials,
+} from "../models/user.ts";
 
 const API_URL = "https://localhost:3000/api";
+const TOKEN_KEY = "auth_token";
+
+// helper functions to do with auth
+export function getAuthToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY);
+}
+export function setAuthToken(token: string): void {
+  localStorage.setItem(TOKEN_KEY, token);
+}
+export function removeAuthToken(): void {
+  localStorage.removeItem(TOKEN_KEY);
+}
+// this helper function adds the auth token into the request headers, so that we can auth ourselves
+function getHeaders(customHeaders: Record<string, string> = {}): HeadersInit {
+  const token = getAuthToken();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...customHeaders,
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer: ${token}`;
+  }
+  return headers;
+}
+// helper function to deal with server errors
+async function handleResponse<T>(response: Response): Promise<T> {
+  if (!response.ok) {
+    let errorMessage = `HTTP Error ${response.status}`; // this will pull the status code, e.g., 500
+    try {
+      const data = await response.json();
+      if (data && data.message) {
+        errorMessage = data.message;
+      }
+    } catch {
+      // this block is empty, if we're not able to read the error message from the response, we leave it as
+      // the default "HTTP ERROR" we defined earlier
+    }
+    throw new Error(errorMessage);
+  }
+}
 
 // this function will get ALL books from the API
 export async function getBooks(): Promise<Book[]> {
