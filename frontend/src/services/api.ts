@@ -45,56 +45,85 @@ async function handleResponse<T>(response: Response): Promise<T> {
     }
     throw new Error(errorMessage);
   }
+  return response.json();
+}
+
+// create the functions to actually handle authenticating with the API
+export async function loginUser(
+  credentials: LoginCredentials,
+): Promise<AuthResponse> {
+  const response = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
+  return handleResponse<AuthResponse>(response);
+}
+
+export async function registerUser(
+  credentials: RegisterCredentials,
+): Promise<AuthResponse> {
+  const response = await fetch(`${API_URL}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
+  return handleResponse<AuthResponse>(response);
 }
 
 // this function will get ALL books from the API
 export async function getBooks(): Promise<Book[]> {
   // fetch(http://localhost:3000/api/books)
-  const response = await fetch(`${API_URL}/books`);
-  return response.json();
+  const response = await fetch(`${API_URL}/books`, {
+    headers: getHeaders(),
+  });
+  return handleResponse<Book[]>(response);
 }
 
 // this function will get a SINGLE book based on ID
 export async function getBook(id: string): Promise<Book> {
   // fetch(http://localhost:3000/api/books/abc123)
-  const response = await fetch(`${API_URL}/books/${id}`);
-  return response.json();
+  const response = await fetch(`${API_URL}/books/${id}`, {
+    headers: getHeaders(),
+  });
+  return handleResponse<Book>(response);
 }
 
 // this function will CREATE a new book using a POST request
 export async function createBook(book: Book): Promise<Book> {
   const response = await fetch(`${API_URL}/books`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: getHeaders(),
     body: JSON.stringify(book),
   });
-  return response.json();
+  return handleResponse<Book>(response);
 }
 
 // this function will update sections of an existing Book in the database using PATCH
 export async function updateBook(book: Book, id: string): Promise<Book> {
   const response = await fetch(`${API_URL}/books/${id}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: getHeaders(),
     body: JSON.stringify(book),
   });
-  return response.json();
+  return handleResponse<Book>(response);
 }
 
 // this function will replace an entire book in the database using PUT
 export async function replaceBook(book: Book, id: string): Promise<Book> {
   const response = await fetch(`${API_URL}/books/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: getHeaders(),
     body: JSON.stringify(book),
   });
-  return response.json();
+  return handleResponse<Book>(response);
 }
 
 // this function will delete a book from the database using a DELETE request
 export async function deleteBook(id: string): Promise<Book> {
   const response = await fetch(`${API_URL}/books/${id}`, {
     method: "DELETE",
+    headers: getHeaders(),
   });
-  return response.json();
+  return handleResponse<Book>(response);
 }
